@@ -4,7 +4,7 @@ A full-stack app for tracking job applications.
 
 ## Tech Stack
 
-- **Frontend:** Next.js
+- **Frontend:** Next.js, shadcn/ui
 - **Backend:** Python, FastAPI
 - **Database:** Supabase (PostgreSQL)
 
@@ -69,6 +69,7 @@ API docs available at `http://localhost:8000/docs`
 
 ```bash
 npm install
+npx shadcn@latest init
 npm run dev
 ```
 
