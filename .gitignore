@@ -53,3 +53,4 @@ build/
 
 # Claude code
 CLAUDE.md
+.claude
