@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.database import supabase
 from app.models.jobs import Job
 from app.routes.auth import get_current_me
-from app.schemas.jobs import JobResponse, JobCreate, supabase_job_to_response
+from app.schemas.jobs import JobResponse, JobCreate, supabase_job_to_response, supabase_jobs_to_resoinse
 from app.schemas.user import UserResponse
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
@@ -45,11 +45,22 @@ async def delete_job(job_id: int, user: UserResponse = Depends(get_current_me)):
     supabase.table("jobs").delete().eq("id", job_id).execute()
     return {"message": "Job deleted successfully"}
 
+@router.get("/", response_model=list[JobResponse])
+async def get_all_jobs(user: UserResponse = Depends(get_current_me)):
+    jobs = supabase.table("jobs").select("*").eq("user_id", user.id).execute()
+
+    if not jobs.data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Jobs not found"
+        )
+    return supabase_jobs_to_resoinse(jobs.data)
+
 @router.get("/{job_id}", response_model=JobResponse)
-async def get_job(job_id: int):
+async def get_job(job_id: int, user: UserResponse = Depends(get_current_me)):
     job = supabase.table("jobs").select("*").eq("id", job_id).execute()
 
-    if not job.data:
+    if not job.data or job.data[0]["user_id"] != user.id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Job not found"
