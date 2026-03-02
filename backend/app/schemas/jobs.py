@@ -48,4 +48,4 @@ class JobResponse(BaseModel):
     link: Optional[str] = None
     status: str = "pending"
     date_submitted: Optional[date] = None
-    created_at: datetime
+    created_at: Optional[datetime] = None

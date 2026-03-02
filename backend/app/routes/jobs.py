@@ -30,7 +30,7 @@ async def create_job(
         date_submitted=job_create.date_submitted,
     )
 
-    job = supabase.table("jobs").insert(job.model_dump(exclude_none=True)).execute()
+    job = supabase.table("jobs").insert(job.model_dump(exclude_none=True, mode="json")).execute()
     return supabase_job_to_response(job.data[0])
 
 @router.delete("/{job_id}")
@@ -48,12 +48,6 @@ async def delete_job(job_id: int, user: UserResponse = Depends(get_current_me)):
 @router.get("/", response_model=list[JobResponse])
 async def get_all_jobs(user: UserResponse = Depends(get_current_me)):
     jobs = supabase.table("jobs").select("*").eq("user_id", user.id).execute()
-
-    if not jobs.data:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Jobs not found"
-        )
     return supabase_jobs_to_resoinse(jobs.data)
 
 @router.get("/{job_id}", response_model=JobResponse)

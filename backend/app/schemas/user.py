@@ -1,5 +1,6 @@
 # Standard library
 from datetime import datetime
+from typing import Optional
 
 # Third-party
 from pydantic import BaseModel, EmailStr
@@ -25,7 +26,7 @@ class UserResponse(BaseModel):
     id: int
     username: str
     email: EmailStr
-    created_at: datetime
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

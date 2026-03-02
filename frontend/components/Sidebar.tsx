@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Briefcase, Settings } from "lucide-react";
+import { LayoutDashboard, Briefcase, Settings, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { logoutAction } from "@/app/(auth)/actions";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -42,6 +43,16 @@ export default function Sidebar() {
           );
         })}
       </nav>
+
+      <div className="px-3 py-4 border-t border-gray-200">
+        <button
+          onClick={() => logoutAction()}
+          className="flex items-center gap-3 px-3 py-2 rounded text-sm text-gray-500 hover:text-gray-800 hover:bg-gray-50 transition-colors w-full"
+        >
+          <LogOut size={16} />
+          Logout
+        </button>
+      </div>
     </aside>
   );
 }

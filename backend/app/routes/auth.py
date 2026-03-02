@@ -36,9 +36,9 @@ def signup(request: SignUpRequest):
     hashed_password = hash_password(request.password)
     
     user = User(
+        username=request.username,
         email=request.email,
         password_hash=hashed_password,
-        username=request.username,
     )
 
     user = supabase.table("users").insert({"email":user.email, "password_hash":user.password_hash, "username":user.username}).execute()
@@ -47,7 +47,7 @@ def signup(request: SignUpRequest):
 
     return user
 
-@router.post("/signin", response_model=Token)
+@router.post("/login", response_model=Token)
 def login(request: LoginRequest):
     """
     Login with email and password.
