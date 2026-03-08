@@ -7,8 +7,14 @@ import type { HotTableClass } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { Job } from "@/types";
 import { NewRow } from "./NewRow";
-import { STATUS_OPTIONS } from "./constants";
+import { STATUS_OPTIONS, STATUS_DOT_COLORS } from "./constants";
 import { DescriptionModal } from "./DescriptionModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 registerAllModules();
 
@@ -16,37 +22,43 @@ registerAllModules();
 // Custom renderers
 // ---------------------------------------------------------------------------
 
-const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
-  Applied:      { bg: "#dbeafe", color: "#1e40af" },
-  Interviewing: { bg: "#fef3c7", color: "#92400e" },
-  Offer:        { bg: "#d1fae5", color: "#065f46" },
-  Rejected:     { bg: "#fee2e2", color: "#991b1b" },
-};
-
 const statusRenderer: Handsontable.renderers.BaseRenderer = function (
   _instance, td, _row, _col, _prop, value
 ) {
   td.innerHTML = "";
   td.style.padding = "4px 6px";
   td.style.verticalAlign = "middle";
+  td.style.textAlign = "center";
 
   if (value) {
-    const scheme = STATUS_COLORS[value as string] ?? { bg: "#f3f4f6", color: "#374151" };
+    const dotColor = STATUS_DOT_COLORS[value as keyof typeof STATUS_DOT_COLORS] ?? "#9ca3af";
     const badge = document.createElement("span");
-    badge.textContent = value as string;
     badge.style.cssText = `
-      display: inline-block;
-      padding: 2px 10px;
-      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px 3px 8px;
+      border-radius: 999px;
       font-size: 12px;
       font-weight: 500;
-      background: ${scheme.bg};
-      color: ${scheme.color};
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
     `;
+    const dot = document.createElement("span");
+    dot.style.cssText = `
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: ${dotColor};
+      flex-shrink: 0;
+    `;
+    const text = document.createElement("span");
+    text.textContent = value as string;
+    badge.appendChild(dot);
+    badge.appendChild(text);
     td.appendChild(badge);
   }
 };
@@ -228,29 +240,36 @@ export function JobsTable({
         />
       )}
 
-      {statusPopover && (
-        <div className="fixed inset-0 z-50" onClick={() => setStatusPopover(null)}>
+      <DropdownMenu
+        open={!!statusPopover}
+        onOpenChange={(open) => { if (!open) setStatusPopover(null); }}
+      >
+        <DropdownMenuTrigger asChild>
           <div
-            className="absolute bg-background border border-border rounded shadow-xl py-1"
-            style={{
-              top: statusPopover.anchor.top,
-              left: statusPopover.anchor.left,
-              minWidth: statusPopover.anchor.width,
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {STATUS_OPTIONS.map((option) => (
-              <button
-                key={option}
-                className="w-full text-left px-3 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground"
-                onClick={() => handleStatusSelect(option)}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+            className="fixed pointer-events-none"
+            style={
+              statusPopover
+                ? { top: statusPopover.anchor.top, left: statusPopover.anchor.left, width: statusPopover.anchor.width, height: 0 }
+                : { top: 0, left: 0, width: 0, height: 0 }
+            }
+          />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" style={{ minWidth: statusPopover?.anchor.width }}>
+          {STATUS_OPTIONS.map((option) => (
+            <DropdownMenuItem
+              key={option}
+              onClick={() => handleStatusSelect(option)}
+              className="gap-2 text-sm"
+            >
+              <span
+                className="w-2 h-2 rounded-full flex-shrink-0"
+                style={{ background: STATUS_DOT_COLORS[option] ?? "#9ca3af" }}
+              />
+              {option}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
