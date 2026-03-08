@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Briefcase, Settings, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { logoutAction } from "@/app/(auth)/actions";
 
 const navLinks = [
@@ -16,9 +17,9 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-[220px] shrink-0 h-full border-r border-gray-200 bg-white flex flex-col">
+    <aside className="w-[220px] shrink-0 h-full border-r border-border bg-background flex flex-col">
       <div className="px-6 py-6">
-        <span className="text-[#1E3A5F] font-semibold text-lg tracking-tight">
+        <span className="text-primary font-semibold text-lg tracking-tight">
           JobTracker
         </span>
       </div>
@@ -33,8 +34,8 @@ export default function Sidebar() {
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors mb-1",
                 isActive
-                  ? "text-[#1E3A5F] font-medium border-l-2 border-[#1E3A5F] bg-[#1E3A5F]/5 pl-[10px]"
-                  : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
+                  ? "text-primary font-medium border-l-2 border-primary bg-primary/5 pl-[10px]"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
               )}
             >
               <Icon size={16} />
@@ -44,14 +45,15 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="px-3 py-4 border-t border-gray-200">
-        <button
+      <div className="px-3 py-4 border-t border-border">
+        <Button
+          variant="ghost"
+          className="w-full justify-start gap-3 text-sm text-muted-foreground hover:text-foreground"
           onClick={() => logoutAction()}
-          className="flex items-center gap-3 px-3 py-2 rounded text-sm text-gray-500 hover:text-gray-800 hover:bg-gray-50 transition-colors w-full"
         >
           <LogOut size={16} />
           Logout
-        </button>
+        </Button>
       </div>
     </aside>
   );
