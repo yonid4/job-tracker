@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { format, parseISO } from "date-fns";
 import { Check, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -11,9 +13,6 @@ import {
 } from "@/components/ui/popover";
 import { Job } from "@/types";
 import { InlineStatus } from "./inline-editors";
-
-const CELL_INPUT =
-  "bg-background border border-border rounded px-2 py-1 text-sm outline-none focus:ring-1 focus:ring-primary w-full";
 
 function emptyDraft(): Omit<Job, "id"> {
   return {
@@ -56,49 +55,49 @@ export function NewRow({ onConfirm, onCancel }: NewRowProps) {
   return (
     <tr className="border-b border-border bg-accent/20">
       <td className="px-4 py-2.5">
-        <input
+        <Input
           autoFocus
           placeholder="Company"
           value={form.company}
           onChange={(e) => set("company", e.target.value)}
           onKeyDown={handleKeyDown}
-          className={CELL_INPUT}
+          className="h-7 text-sm"
         />
       </td>
       <td className="px-4 py-2.5">
-        <input
+        <Input
           placeholder="Role"
           value={form.role}
           onChange={(e) => set("role", e.target.value)}
           onKeyDown={handleKeyDown}
-          className={CELL_INPUT}
+          className="h-7 text-sm"
         />
       </td>
       <td className="px-4 py-2.5">
-        <textarea
+        <Input
           placeholder="Description"
           value={form.description}
           onChange={(e) => set("description", e.target.value)}
-          rows={2}
-          className={`${CELL_INPUT} resize-none`}
+          onKeyDown={handleKeyDown}
+          className="h-7 text-sm"
         />
       </td>
       <td className="px-4 py-2.5">
-        <input
+        <Input
           placeholder="$0,000"
           value={form.salary}
           onChange={(e) => set("salary", e.target.value)}
           onKeyDown={handleKeyDown}
-          className={CELL_INPUT}
+          className="h-7 text-sm"
         />
       </td>
       <td className="px-4 py-2.5">
-        <input
+        <Input
           placeholder="https://…"
           value={form.link}
           onChange={(e) => set("link", e.target.value)}
           onKeyDown={handleKeyDown}
-          className={CELL_INPUT}
+          className="h-7 text-sm"
         />
       </td>
       <td className="px-4 py-2.5">
@@ -132,19 +131,13 @@ export function NewRow({ onConfirm, onCancel }: NewRowProps) {
         </Popover>
       </td>
       <td className="px-4 py-2.5">
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={handleConfirm}
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
+        <div className="flex items-center gap-0.5">
+          <Button size="icon" variant="ghost" className="h-6 w-6 text-muted-foreground hover:text-foreground" onClick={handleConfirm}>
             <Check className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={onCancel}
-            className="text-muted-foreground hover:text-destructive transition-colors"
-          >
+          </Button>
+          <Button size="icon" variant="ghost" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={onCancel}>
             <X className="w-3.5 h-3.5" />
-          </button>
+          </Button>
         </div>
       </td>
     </tr>
