@@ -37,17 +37,15 @@ export function JobToolbar({
 
       <div className="flex items-center gap-1">
         {STATUS_FILTERS.map((f) => (
-          <button
+          <Button
             key={f}
+            size="sm"
+            variant={filter === f ? "default" : "ghost"}
             onClick={() => onFilterChange(f)}
-            className={`px-3 py-1 text-xs rounded transition-colors ${
-              filter === f
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground hover:bg-accent"
-            }`}
+            className="h-7 px-3 text-xs"
           >
             {f}
-          </button>
+          </Button>
         ))}
       </div>
 
