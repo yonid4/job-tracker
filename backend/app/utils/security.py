@@ -21,7 +21,6 @@ load_dotenv()
 # init the JWT var settings
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
 password_hash = PasswordHash.recommended()
 

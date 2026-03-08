@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.database import supabase
 from app.models.jobs import Job
 from app.routes.auth import get_current_me
-from app.schemas.jobs import JobResponse, JobCreate, supabase_job_to_response, supabase_jobs_to_resoinse
+from app.schemas.jobs import JobResponse, JobCreate, supabase_job_to_response, supabase_jobs_to_response
 from app.schemas.user import UserResponse
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
@@ -48,7 +48,7 @@ async def delete_job(job_id: int, user: UserResponse = Depends(get_current_me)):
 @router.get("/", response_model=list[JobResponse])
 async def get_all_jobs(user: UserResponse = Depends(get_current_me)):
     jobs = supabase.table("jobs").select("*").eq("user_id", user.id).execute()
-    return supabase_jobs_to_resoinse(jobs.data)
+    return supabase_jobs_to_response(jobs.data)
 
 @router.get("/{job_id}", response_model=JobResponse)
 async def get_job(job_id: int, user: UserResponse = Depends(get_current_me)):

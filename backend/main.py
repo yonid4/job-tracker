@@ -6,8 +6,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes.auth import router as auth_router
 from app.routes.jobs import router as jobs_router
 
-# from app.routes.dashboard import router as dashboard_router
-
 app = FastAPI(title="Job Tracker API", version="1.0.0")
 
 # CORS middleware for React frontend

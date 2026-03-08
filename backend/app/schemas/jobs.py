@@ -20,7 +20,7 @@ def supabase_job_to_response(data: dict) -> "JobResponse":
         created_at=data["created_at"],
     )
 
-def supabase_jobs_to_resoinse(data: list[dict]) -> list["JobResponse"]:
+def supabase_jobs_to_response(data: list[dict]) -> list["JobResponse"]:
     jobs = []
     for job in data:
         jobs.append(supabase_job_to_response(job))
