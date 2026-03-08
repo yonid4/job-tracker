@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 interface DescriptionModalProps {
   value: string;
@@ -12,7 +13,7 @@ interface DescriptionModalProps {
 
 export function DescriptionModal({ value, anchor, onSave, onClose }: DescriptionModalProps) {
   const [draft, setDraft] = useState(value);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     textareaRef.current?.focus();
@@ -58,12 +59,12 @@ export function DescriptionModal({ value, anchor, onSave, onClose }: Description
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <textarea
+        <Textarea
           ref={textareaRef}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           rows={6}
-          className="w-full resize-none rounded border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring overflow-y-auto"
+          className="resize-none overflow-y-auto"
         />
 
         <div className="flex justify-end gap-2">
