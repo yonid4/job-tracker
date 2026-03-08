@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Handsontable from "handsontable";
 import { HotTable } from "@handsontable/react";
+import type { HotTableClass } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { Job } from "@/types";
 import { NewRow } from "./NewRow";
@@ -100,20 +101,12 @@ export function JobsTable({
     anchor: { top: number; left: number; width: number };
   } | null>(null);
 
+  const hotRef = useRef<HotTableClass>(null);
+
   function handleAfterOnCellMouseDown(event: MouseEvent, coords: { row: number; col: number }) {
     if (coords.row < 0) return;
     const td = event.target as HTMLElement;
     const rect = td.getBoundingClientRect();
-
-    if (coords.col === 2) {
-      const job = jobs[coords.row];
-      if (!job) return;
-      setDescModal({
-        rowIndex: coords.row,
-        value: job.description ?? "",
-        anchor: { top: rect.top, left: rect.left, width: rect.width },
-      });
-    }
 
     if (coords.col === 5) {
       setStatusPopover({
@@ -121,6 +114,23 @@ export function JobsTable({
         anchor: { top: rect.bottom, left: rect.left, width: rect.width },
       });
     }
+  }
+
+  function handleContainerDblClick(e: React.MouseEvent) {
+    const td = (e.target as HTMLElement).closest("td");
+    if (!td) return;
+    const hot = hotRef.current?.hotInstance;
+    if (!hot) return;
+    const coords = hot.getCoords(td as HTMLTableCellElement);
+    if (!coords || coords.row < 0 || coords.col !== 2) return;
+    const rect = td.getBoundingClientRect();
+    const job = jobs[coords.row];
+    if (!job) return;
+    setDescModal({
+      rowIndex: coords.row,
+      value: job.description ?? "",
+      anchor: { top: rect.top, left: rect.left, width: rect.width },
+    });
   }
 
   function handleStatusSelect(value: string) {
@@ -171,7 +181,9 @@ export function JobsTable({
           No jobs found. Add one to get started.
         </div>
       ) : (
+        <div onDoubleClick={handleContainerDblClick}>
         <HotTable
+          ref={hotRef}
           data={jobs}
           licenseKey="non-commercial-and-evaluation"
           colHeaders={[
@@ -204,6 +216,7 @@ export function JobsTable({
           height="auto"
           width="100%"
         />
+        </div>
       )}
 
       {descModal && (
