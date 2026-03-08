@@ -1,11 +1,5 @@
 import { JobStatus } from "@/types";
-
-const DOT_COLOR: Record<JobStatus, string> = {
-  Applied: "bg-blue-500",
-  Interviewing: "bg-yellow-400",
-  Offer: "bg-green-500",
-  Rejected: "bg-red-400",
-};
+import { STATUS_DOT_COLORS } from "@/components/dashboard/constants";
 
 interface StatusBadgeProps {
   status: JobStatus;
@@ -14,7 +8,10 @@ interface StatusBadgeProps {
 export default function StatusBadge({ status }: StatusBadgeProps) {
   return (
     <span className="flex items-center gap-1.5 text-sm">
-      <span className={`w-2 h-2 rounded-full shrink-0 ${DOT_COLOR[status]}`} />
+      <span
+        className="w-2 h-2 rounded-full shrink-0"
+        style={{ background: STATUS_DOT_COLORS[status] ?? "#9ca3af" }}
+      />
       {status}
     </span>
   );
