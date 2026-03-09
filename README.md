@@ -1,12 +1,13 @@
 # Job Tracker
 
-A full-stack app for tracking job applications.
+A full-stack app for tracking job applications. Includes a built-in job scraper powered by [JobSpy](https://github.com/Bunsly/JobSpy) that searches LinkedIn, Indeed, Glassdoor, and other job boards — letting you import listings directly into your tracker without manual data entry.
 
 ## Tech Stack
 
 - **Frontend:** Next.js, shadcn/ui
 - **Backend:** Python, FastAPI
 - **Database:** Supabase (PostgreSQL)
+- **Scraper:** JobSpy
 
 ## Project Structure
 
@@ -15,13 +16,36 @@ job-tracker/
 ├── backend/
 │   ├── app/
 │   │   ├── models/        # Pydantic database models
+│   │   │   ├── jobs.py
+│   │   │   ├── scraper.py
+│   │   │   └── users.py
 │   │   ├── schemas/       # Pydantic request/response schemas
+│   │   │   ├── auth.py
+│   │   │   ├── jobs.py
+│   │   │   ├── scraper.py
+│   │   │   └── user.py
 │   │   ├── routes/        # API route handlers
+│   │   │   ├── auth.py
+│   │   │   ├── jobs.py
+│   │   │   └── scraper.py
+│   │   ├── services/      # Business logic layer
+│   │   │   └── scraper_service.py
 │   │   └── utils/         # Utility functions (auth, security)
 │   ├── main.py
 │   └── requirements.txt
 ├── migrations/            # SQL migration files
-└── frontend/              # Next.js app
+└── frontend/
+    ├── app/
+    │   ├── (auth)/        # Login and register pages
+    │   ├── (dashboard)/
+    │   │   ├── dashboard/ # Job tracker table + actions
+    │   │   └── scraper/   # Scraper UI + actions
+    │   └── layout.tsx
+    └── components/
+        ├── dashboard/     # Table, toolbar, modals, stats
+        ├── ui/            # shadcn/ui primitives
+        ├── Sidebar.tsx
+        └── StatusBadge.tsx
 ```
 
 ## Getting Started
