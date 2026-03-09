@@ -1,6 +1,7 @@
 # Third-party
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes.scraper import router as scraper_router
 
 # Local
 from app.routes.auth import router as auth_router
@@ -20,6 +21,7 @@ app.add_middleware(
 # Include routers
 app.include_router(auth_router)
 app.include_router(jobs_router)
+app.include_router(scraper_router)
 
 @app.get("/")
 async def root():
