@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Briefcase, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Briefcase, Settings, LogOut, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { logoutAction } from "@/app/(auth)/actions";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/jobs", label: "Jobs", icon: Briefcase },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/scraper", label: "Import Jobs", icon: Search },
+  // { href: "/jobs", label: "Jobs", icon: Briefcase },
+  // { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export default function Sidebar() {

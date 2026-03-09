@@ -12,3 +12,16 @@ export interface Job {
   status: JobStatus;
   dateSubmitted: string;
 }
+
+export interface ScrapedJob {
+  id: number;
+  company: string;
+  role: string;
+  description: string | null;
+  salary: string | null;
+  link: string | null;
+  status: string;
+  source: string;
+  source_url: string | null;
+  scraped_at: string | null;
+}
