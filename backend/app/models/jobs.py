@@ -15,7 +15,15 @@ class Job(BaseModel):
     salary: Optional[str] = None
     link: Optional[str] = None
     status: str
+    source: str = "manual"
+    source_url: Optional[str] = None
+    scraped_at: Optional[datetime] = None
     date_submitted: Optional[date] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+class ScrapeRequest(BaseModel):
+    ... # TODO: add scrape request fields
+
+class ScrapeResponse(BaseModel):
+    ... # TODO: add scrape response fields

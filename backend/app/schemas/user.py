@@ -7,6 +7,7 @@ from pydantic import BaseModel, EmailStr
 
 
 def supabase_user_to_response(data: dict) -> "UserResponse":
+    """Convert a Supabase user row (dict) to a UserResponse model."""
     return UserResponse(
         id=data["id"],
         username=data["username"],

@@ -60,6 +60,7 @@ class Token(BaseModel):
         }
     
 class TokenData(BaseModel):
+    """Internal model for data extracted from a decoded JWT token."""
     email: str | None = None
 
     class Config:
