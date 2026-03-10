@@ -20,17 +20,30 @@ SITE_MAP = {
 }
 
 
+_EXPERIENCE_LEVEL_OVERFETCH_MULTIPLIER = 3
+
+
 def _scrape_sync(request: ScrapeRequest) -> pd.DataFrame:
     """
     Synchronous jobspy call — run via asyncio.to_thread to avoid blocking.
+
+    When experience_level is set, we over-fetch by a multiplier so that after
+    post-filtering by job_level (LinkedIn-only field) we still have enough results.
+    Non-LinkedIn results always pass through since they never populate job_level.
     """
+    results_wanted = (
+        request.results_per_site * _EXPERIENCE_LEVEL_OVERFETCH_MULTIPLIER
+        if request.experience_level
+        else request.results_per_site
+    )
     kwargs: dict = {
         "site_name": request.sites,
         "search_term": request.keywords,
         "location": request.location,
-        "results_wanted": request.results_per_site,
+        "results_wanted": results_wanted,
         "distance": request.distance,
         "is_remote": request.is_remote,
+        "linkedin_fetch_description": True,
     }
     if request.hours_old is not None:
         kwargs["hours_old"] = request.hours_old
@@ -50,17 +63,20 @@ def _row_to_job(row: pd.Series, user_id: int) -> Job:
     elif pd.notna(row.get("min_amount")):
         salary = f"${int(row['min_amount']):,}+"
 
+    job_level = str(row["job_level"]) if pd.notna(row.get("job_level")) else None
+
     return Job(
         user_id=user_id,
         company=str(row.get("company", "Unknown")),
         role=str(row.get("title", "Unknown")),
-        description=str(row.get("description", ""))[:5000] if pd.notna(row.get("description")) else None,
+        description=str(row.get("description", ""))[:10000] if pd.notna(row.get("description")) else None,
         salary=salary,
         link=str(row.get("job_url", "")) if pd.notna(row.get("job_url")) else None,
         status="pending",
         source=SITE_MAP.get(str(row.get("site", "")), "scraped"),
         source_url=str(row.get("job_url", "")) if pd.notna(row.get("job_url")) else None,
         scraped_at=datetime.now(timezone.utc),
+        job_level=job_level,
     )
 
 
@@ -84,11 +100,36 @@ async def run_scrape(
         return [], []
 
     jobs: list[Job] = []
+    job_urls: list[str] = []
     for _, row in df.iterrows():
         try:
             jobs.append(_row_to_job(row, user_id))
+            job_urls.append(jobs[-1].link)
         except Exception as e:
-            errors.append(f"Row parse error: {str(e)}")
+            errors.append(f"Row parse error: {str(e)}") 
+
+    for j in jobs:
+        print(f"role:{j.role}, url:{j.link}, job level:{j.job_level if j.job_level else 'no level'}\n")
+
+    urls_to_check = [url for url in job_urls if url is not None]
+    if urls_to_check:
+        res = supabase.table("jobs").select("source_url").eq("user_id", user_id).in_("source_url", urls_to_check).execute()
+        already_saved = {row["source_url"] for row in res.data}
+    else:
+        already_saved = set()
+
+    # Always exclude jobs the user has already saved
+    jobs = [j for j in jobs if j.link not in already_saved]
+
+    # Post-filter by experience level when requested.
+    # job_level is only populated for LinkedIn; non-LinkedIn jobs (null) always pass through.
+    if request.experience_level:
+        jobs = [
+            j for j in jobs
+            if j.job_level is None or j.job_level.lower() == request.experience_level.lower()
+        ]
+
+    jobs = jobs[:request.results_per_site]
 
     if not request.auto_save:
         # Return results without persisting — user will choose what to save
@@ -105,6 +146,7 @@ async def run_scrape(
                 source=j.source,
                 source_url=j.source_url,
                 scraped_at=j.scraped_at,
+                job_level=j.job_level,
             )
             for j in jobs
         ], errors

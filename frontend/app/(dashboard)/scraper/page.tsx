@@ -15,6 +15,7 @@ export default function ScraperPage() {
   const [resultsPerSite, setResultsPerSite] = useState(20);
   const [isRemote, setIsRemote] = useState(false);
   const [jobType, setJobType] = useState("");
+  const [experienceLevel, setExperienceLevel] = useState("");
   const [hoursOld, setHoursOld] = useState(48);
   const [distance, setDistance] = useState(50);
 
@@ -49,6 +50,7 @@ export default function ScraperPage() {
       results_per_site: resultsPerSite,
       is_remote: isRemote,
       ...(jobType && { job_type: jobType }),
+      ...(experienceLevel && { experience_level: experienceLevel }),
       hours_old: hoursOld,
       distance,
     };
@@ -123,7 +125,7 @@ export default function ScraperPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
           <div className="space-y-1">
             <label className="text-sm font-medium">Results per site</label>
             <Input
@@ -146,6 +148,22 @@ export default function ScraperPage() {
               <option value="parttime">Part-time</option>
               <option value="internship">Internship</option>
               <option value="contract">Contract</option>
+            </select>
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium">Experience level</label>
+            <select
+              value={experienceLevel}
+              onChange={(e) => setExperienceLevel(e.target.value)}
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            >
+              <option value="">Any level</option>
+              <option value="internship">Internship</option>
+              <option value="entry level">Entry level</option>
+              <option value="associate">Associate</option>
+              <option value="mid-senior level">Mid-Senior</option>
+              <option value="director">Director</option>
+              <option value="executive">Executive</option>
             </select>
           </div>
           <div className="space-y-1">

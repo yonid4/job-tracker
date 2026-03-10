@@ -10,6 +10,7 @@ export type ScrapeParams = {
   results_per_site: number;
   is_remote?: boolean;
   job_type?: string;
+  experience_level?: string;
   hours_old?: number;
   distance?: number;
 };

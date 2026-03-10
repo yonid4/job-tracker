@@ -24,4 +24,5 @@ export interface ScrapedJob {
   source: string;
   source_url: string | null;
   scraped_at: string | null;
+  job_level: string | null;
 }

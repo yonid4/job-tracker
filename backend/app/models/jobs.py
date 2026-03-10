@@ -18,6 +18,7 @@ class Job(BaseModel):
     source: str = "manual"
     source_url: Optional[str] = None
     scraped_at: Optional[datetime] = None
+    job_level: Optional[str] = None
     date_submitted: Optional[date] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

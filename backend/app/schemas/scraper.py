@@ -22,6 +22,14 @@ class ScrapeRequest(BaseModel):
         default=None,
         description="fulltime | parttime | internship | contract"
     )
+    experience_level: Optional[str] = Field(
+        default=None,
+        description=(
+            "Filter results by job level. Only LinkedIn populates this field; "
+            "results from other sites are always included. "
+            "Valid values: internship | entry level | associate | mid-senior level | director | executive"
+        )
+    )
     auto_save: bool = Field(
         default=False,
         description="If True, automatically save all results to the jobs table"

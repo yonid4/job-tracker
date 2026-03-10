@@ -21,7 +21,20 @@ async def scrape_jobs(
 
     Supported sites: `linkedin`, `indeed`, `glassdoor`, `zip_recruiter`
     """
+    print("Scraping starting")
+    print("request:")
+    print(f"keyword:{request.keywords}")
+    print(f"location:{request.location}")
+    print(f"sites:{request.sites}")
+    print(f"results per site:{request.results_per_site}")
+    print(f"hours old:{request.hours_old}")
+    print(f"job type:{request.job_type}")
+    print(f"experience level:{request.experience_level}")
+    print(f"auto save:{request.auto_save}")
+    print()
     results, errors = await run_scrape(request, user_id=user.id)
+
+    print(f"errors:{errors}")
 
     return ScrapeResponse(
         success=len(errors) == 0 or len(results) > 0,
